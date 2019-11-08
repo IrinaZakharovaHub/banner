@@ -1,9 +1,12 @@
 import React from 'react';
-import styles from './App.module.css'
-import TextList from '../TextList/TextList.js'
+import styles from './App.module.css';
+import {connect} from "react-redux";
+import {changeHeight, changeWidth} from '../redux/bannerSize/banner.actions'
+import Menu from '../Menu/Menu'
 
 
-export default class App extends React.Component {
+class App extends React.Component {
+
     constructor(props) {
         super(props);
         this.isMoved = false;
@@ -12,18 +15,12 @@ export default class App extends React.Component {
     }
 
     state = {
-        width: 100,
-        height: 20,
         sizeValue: '%',
         left: 50,
         top: 50,
         scale: 1,
         x: 0,
         y: 0,
-        background: {
-            type: 'image',
-            resource: 'url(./resources/img.jpg)'
-        },
         layers: [
             {
                 type: 'image',
@@ -41,69 +38,54 @@ export default class App extends React.Component {
                 fontFace: ''
             }
         ],
-        textId: 0
+        textId: 0,
+        todo: ''
     };
 
-    transform = () => {
+    transformScale = () => {
         return {
-            width: this.state.width + this.state.sizeValue,
-            height: this.state.height + this.state.sizeValue,
-            transform: 'scale(' + this.state.scale + ') translateX(' + this.state.x * (1 / this.state.scale) + 'px) translateY(' + this.state.y * (1 / this.state.scale) + 'px)'
+            transform: 'scale(' + this.state.scale + ')'
         }
     };
 
-    handleChange = (e) => {
-        const file = e.target.files[0];
-        let reader = new FileReader();
-        reader.onload = (() => {
-            const _ = this;
-            return function (e) {
-                console.log(e.target.result);
-                _.setState({
-                    background: {
-                        type: 'image',
-                        resource: `url(${e.target.result})`
-                    }
-                });
-            };
-        })();
-        reader.readAsDataURL(file);
-    };
-
-    addBackground = (obj) => {
-        if (obj.type === 'fill') {
-            return {background: obj.resource}
-        }
-        if (obj.type === 'image') {
-            return {
-                background: obj.resource,
-                backgroundSize: 'contain'
-            }
+    transformPosition = () => {
+        return {
+            transform: 'translateX(' + this.state.x * (1 / this.state.scale) + 'px) translateY(' + this.state.y * (1 / this.state.scale) + 'px)'
         }
     };
 
-    changeCanvasWidth = (e) => {
-        this.setState({
-            width: e.target.value
-        })
-    };
-
-    changeCanvasHeight = (e) => {
-      this.setState({
-          height: e.target.value
-      })
+    getBannerSizes = () => {
+        const width = this.props.bannerSize.width;
+        const height = this.props.bannerSize.height;
+        return {
+            width: width + this.state.sizeValue,
+            height: height + this.state.sizeValue
+        }
     };
 
     handleWheel = (e) => {
         const delta = e.deltaY || e.detail;
+
         if (delta > 0) {
-            this.setState({
-                scale: this.state.scale + 0.05
-            })
+            if (this.state.scale >= 2) {
+                this.setState({
+                    scale: 2
+                })
+            } else {
+                this.setState({
+                    scale: this.state.scale + 0.05
+                });
+            }
         } else {
-            this.setState({
-                scale: this.state.scale - 0.05
-            })
+            if (this.state.scale <= 1) {
+                this.setState({
+                    scale: 1
+                })
+            } else {
+                this.setState({
+                    scale: this.state.scale - 0.05
+                });
+            }
         }
 
     };
@@ -132,6 +114,18 @@ export default class App extends React.Component {
         this.y = e.clientY - this.y;
     };
 
+    addBackground = (obj) => {
+        if (obj.type === 'fill') {
+            return {background: obj.resource}
+        }
+        if (obj.type === 'image') {
+            return {
+                background: obj.resource,
+                backgroundSize: 'contain'
+            }
+        }
+    };
+
     render() {
         const layers = this.state.layers.map((el, i) => {
             return (
@@ -140,47 +134,45 @@ export default class App extends React.Component {
                 </div>
             )
         });
+
         return (
             <>
                 <div className={styles.canvas}
-                     onMouseUp={(e) => this.handleMouseUp(e)}
-                     onMouseDown={(e) => this.handleMouseDown(e)}
-                     onMouseMove={(e) => this.handleMouseMove(e)}
                      onWheel={(e) => this.handleWheel(e)}
+                     style={this.transformScale()}
                 >
-                    <div className={styles.bannerWrapper}
-                         style={this.transform()}>
-                        <div className={styles.background} style={this.addBackground(this.state.background)}>
-                            {layers}
+                    <div className={styles.transparentCanvas}
+                         onMouseUp={(e) => this.handleMouseUp(e)}
+                         onMouseDown={(e) => this.handleMouseDown(e)}
+                         onMouseMove={(e) => this.handleMouseMove(e)}
+                         style={this.transformPosition()}
+                    >
+                        <div className={styles.bannerWrapper}
+                             style={this.getBannerSizes()}
+                        >
+                            <div className={styles.background} style={this.addBackground(this.props.bannerBackground.background)}>
+                                {layers}
+                            </div>
                         </div>
                     </div>
+
                 </div>
-                <div className={styles.menu}>
-                    <div className={styles.menuItem}>
-                        <label>
-                            <span>
-                                 Width
-                            </span>
-                            <input type="number" value={this.state.width} onChange={(e) => this.changeCanvasWidth(e)} min={1} max={100}/>
-                            <span>%</span>
-                        </label>
-                    </div>
-                    <div className={styles.menuItem}>
-                        <label>
-                            <span>
-                                 Height
-                            </span>
-                            <input type="number" value={this.state.height} onChange={(e) => this.changeCanvasHeight(e)} min={1} max={100}/>
-                            <span>%</span>
-                        </label>
-                    </div>
-                    <div className={styles.fileLoader}>
-                        <input type="file" onChange={this.handleChange}/>
-                    </div>
-                </div>
-                {/*<button onClick={this.handleClick}>add text</button>*/}
-                {/*<TextList list={this.state.texts}/>*/}
+                <Menu/>
             </>
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        bannerSize: state.bannerSize,
+        bannerBackground: state.bannerBackground
+    };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+    changeHeight: (height) => dispatch(changeHeight(height)),
+    changeWidth: (width) => dispatch(changeWidth(width))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

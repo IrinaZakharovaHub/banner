@@ -1,0 +1,50 @@
+.menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 30%;
+    padding: 20px;
+    background: #eef1f7;
+    box-shadow: inset 0 -10px 10px 0 rgba(185, 185, 185, 0.62);
+    border-left: 2px solid #bac2d2;
+    z-index: 1;
+}
+
+.menuItem {
+    margin-bottom: 10px;
+}
+
+.menuItem span {
+    width: 50px;
+    display: inline-block;
+}
+
+.fileLoader {
+    position: relative;
+    /*top: calc(50% - 25px);*/
+    /*left: calc(50% - 52px);*/
+}
+
+.fileLoader:after {
+    content: 'Загрузить фон';
+    width: 126px;
+    height: 30px;
+    padding: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: repeating-linear-gradient(
+            45deg,
+            #606dbc,
+            #606dbc 10px,
+            #465298 10px,
+            #465298 20px);
+    z-index: -1;
+    border-radius: 5px;
+    font-family: sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
