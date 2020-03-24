@@ -1,8 +1,8 @@
 import {bannerActionTypes} from './banner.types'
 
 const initialState = {
-    width: 100,
-    height: 20
+    width: 700,
+    height: 400
 };
 
 const bannerReducer = (state = initialState, action) => {

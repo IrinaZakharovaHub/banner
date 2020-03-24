@@ -8,7 +8,6 @@ const initialState = {
 };
 
 const bannerReducer = (state = initialState, action) => {
-    console.log('action', action);
     switch (action.type) {
         case bannerActionTypes.BACKGROUND:
             return {...state, background: action.payload};

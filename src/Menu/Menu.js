@@ -3,16 +3,16 @@ import styles from './Menu.module.css';
 import {connect} from "react-redux";
 import {changeHeight, changeWidth} from '../redux/bannerSize/banner.actions';
 import {changeBackground} from '../redux/bannerBackground/bannerBackground.actions';
+import Layers from '../Layers/Layers';
+import Constructor from '../Constructor/Constructor';
 
 class Menu extends React.Component {
 
     state = {
         width: 0,
         height: 0,
-        background: {
-            type: 'image',
-            resource: 'url(./resources/img.jpg)'
-        }
+        background: this.props.bannerBackground.background,
+        inputValue: ''
     };
 
     handleChange = (e) => {
@@ -50,6 +50,22 @@ class Menu extends React.Component {
         });
         this.props.changeHeight(e.target.value)
     };
+
+    addLayer = () => {
+        if (this.state.inputValue) {
+            this.props.addLayer({'name': this.state.inputValue});
+            this.setState({
+                inputValue: ''
+            });
+        }
+    };
+
+    handleInputChange = (e) => {
+        this.setState({
+            inputValue: e.target.value
+        })
+    };
+
     render() {
         return (
             <div className={styles.menu}>
@@ -59,8 +75,8 @@ class Menu extends React.Component {
                                  Width
                             </span>
                         <input type="number" value={this.props.bannerSize.width}
-                               onChange={(e) => this.changeCanvasWidth(e)} min={1} max={100}/>
-                        <span>%</span>
+                               onChange={(e) => this.changeCanvasWidth(e)} min={1} max={1200}/>
+                        <span>px</span>
                     </label>
                 </div>
                 <div className={styles.menuItem}>
@@ -69,13 +85,15 @@ class Menu extends React.Component {
                                  Height
                             </span>
                         <input type="number" value={this.props.bannerSize.height}
-                               onChange={(e) => this.changeCanvasHeight(e)} min={1} max={100}/>
-                        <span>%</span>
+                               onChange={(e) => this.changeCanvasHeight(e)} min={1} max={900}/>
+                        <span>px</span>
                     </label>
                 </div>
                 <div className={styles.fileLoader}>
                     <input type="file" onChange={this.handleChange}/>
                 </div>
+                <Layers/>
+                <Constructor/>
             </div>
         )
     }
@@ -83,14 +101,18 @@ class Menu extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        bannerSize: state.bannerSize
+        bannerSize: state.bannerSize,
+        bannerBackground: state.bannerBackground
     };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-    changeHeight: (height) => dispatch(changeHeight(height)),
-    changeWidth: (width) => dispatch(changeWidth(width)),
-    changeBackground: (obj) => dispatch(changeBackground(obj))
-});
+const mapDispatchToProps = (dispatch) => {
+    return{
+        changeHeight: (height) => dispatch(changeHeight(height)),
+        changeWidth: (width) => dispatch(changeWidth(width)),
+        changeBackground: (obj) => dispatch(changeBackground(obj))
+    }
+};
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);
