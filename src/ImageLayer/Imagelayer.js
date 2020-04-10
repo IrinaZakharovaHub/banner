@@ -11,7 +11,6 @@ class ImageLayer extends React.Component {
     }
 
     handleInputChange = (type, e, id) => {
-        console.log('hndle ID', id)
         this.props.changeLayer(type, e.target.value, id);
     };
 
@@ -43,7 +42,7 @@ class ImageLayer extends React.Component {
                 {imageLayers &&
                     imageLayers.map((el) => {
                         return (
-                            <div key={el.id} className={styles.block}>
+                            <div key={el.id} className={styles.block} style={{order: el.order}}>
                                 <div className={styles.delete} onClick={()=>this.deleteLayer(el.id)}>
                                     X 
                                 </div> 

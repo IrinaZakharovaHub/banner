@@ -84,7 +84,6 @@ class Canvas extends React.Component {
         const width = this.canvas.current.offsetWidth;
         const height = this.canvas.current.offsetHeight;
         if (this.isMoved && (e.clientX > 100 && e.clientX < width - 100 && e.clientY > 100 && e.clientY < height - 100)) {
-            console.log(111);
             this.setState({
                 x: e.clientX - this.x,
                 y: e.clientY - this.y

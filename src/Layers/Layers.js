@@ -8,6 +8,15 @@ import ImageLayer from '../ImageLayer/Imagelayer';
 
 class Layers extends React.Component {
 
+    constructor(props) {
+        super(props);
+    }
+
+    state = {
+        counter: 0
+    };
+
+
     addLayer = (type) => {
         if (type === 'text') {
                 this.props.addLayer({
@@ -18,6 +27,7 @@ class Layers extends React.Component {
                 top: 0,
                 left: 0,
                 className: '',
+                order: `${this.state.counter}`,
                 animations: [
                     {
                         name: 'Fade in',
@@ -38,6 +48,7 @@ class Layers extends React.Component {
                 top: 0,
                 left: 0,
                 className: '',
+                order: this.state.counter,
                 animations: [
                     {
                         name: 'Fade in',
@@ -50,6 +61,8 @@ class Layers extends React.Component {
                 ]
             });
         }
+        this.setState({conter: this.state.counter++})
+        console.log('count', this.state.counter);
 
     };
 
@@ -58,17 +71,13 @@ class Layers extends React.Component {
             <>
                 <div>
                      <button onClick={()=>this.addLayer('image')} className={styles.button}>1. Add all image layers</button>
-                     <div className={styles.overflow}>
-                    <ImageLayer/>
-                    </div>
-                      <button onClick={()=>this.addLayer('text')} className={styles.button}>2. Add all text layers</button>
-                    <div className={styles.overflow}>
-                        <TextLayer/>
-                    </div>
+                     <br/>
+                     <button onClick={()=>this.addLayer('text')} className={styles.button}>2. Add all text layers</button>
                 </div>
-
-         
-
+                <div className={styles.overflow}>
+                    <ImageLayer/>
+                    <TextLayer/>
+                </div>
             </>
         )
     }

@@ -31,7 +31,7 @@ class TextLayer extends React.Component {
                 {textLayers &&
                     textLayers.map((el) => {
                             return (
-                                <div key={el.id} className={styles.block}>
+                                <div key={el.id} className={styles.block} style={{order: el.order}}>
                                     <div className={styles.delete} onClick={()=>this.deleteLayer(el.id)}>
                                         X 
                                     </div> 
