@@ -8,6 +8,7 @@ class Canvas extends React.Component {
 
     constructor(props) {
         super(props);
+        this.canvas = React.createRef();
         this.isMoved = false;
         this.x = 0;
         this.y = 0;
@@ -73,11 +74,17 @@ class Canvas extends React.Component {
         this.isMoved = true;
         this.x = e.clientX - this.x;
         this.y = e.clientY - this.y;
+        console.log('START', this.x, this.y)
     };
 
     handleMouseMove = (e) => {
         e.persist();
-        if (this.isMoved) {
+        console.log('this', this.x, this.y);
+        console.log('client',e.clientX,e.clientY);
+        const width = this.canvas.current.offsetWidth;
+        const height = this.canvas.current.offsetHeight;
+        if (this.isMoved && (e.clientX > 100 && e.clientX < width - 100 && e.clientY > 100 && e.clientY < height - 100)) {
+            console.log(111);
             this.setState({
                 x: e.clientX - this.x,
                 y: e.clientY - this.y
@@ -90,18 +97,23 @@ class Canvas extends React.Component {
         this.isMoved = false;
         this.x = e.clientX - this.x;
         this.y = e.clientY - this.y;
+        console.log('END', this.x, this.y);
     };
 
     addBackground = (obj) => {
         if (obj.type === 'fill') {
-            return {background: obj.resource}
+            return {
+                background: obj.resource,
+                width: '100%',
+                height: '100%',
+            }
         }
         if (obj.type === 'image') {
             return {
                 background: obj.resource,
                 backgroundSize: 'contain',
                 width: '100%',
-                height: '100%'
+                height: '100%',
             }
         }
     };
@@ -114,27 +126,47 @@ class Canvas extends React.Component {
                      style={this.transformScale()}
                 >
                     <div  id='getBanner' className={styles.transparentCanvas}
-                         onMouseUp={(e) => this.handleMouseUp(e)}
-                         onMouseDown={(e) => this.handleMouseDown(e)}
-                         onMouseMove={(e) => this.handleMouseMove(e)}
-                         style={this.transformPosition()}
+                        //  onMouseUp={(e) => this.handleMouseUp(e)}
+                        //  onMouseDown={(e) => this.handleMouseDown(e)}
+                        //  onMouseMove={(e) => this.handleMouseMove(e)}
+                        //  style={this.transformPosition()}
+                         ref={this.canvas}
                     >
-                        <div className={styles.bannerWrapper}
-                             style={this.getBannerSizes()}
+                        <div className={styles.bannerWrapper + ' bannerWrapper'}
+                             style={{...this.getBannerSizes(), position: 'relative', overflow: 'hidden'}}
                         >
                             <div className={styles.background} style={this.addBackground(this.props.bannerBackground.background)}>
                                 {
                                     this.props.layers.layers && this.props.layers.layers.map((el, i) => {
-                                        return (
-                                            <div key={i} style={{
-                                                position: 'absolute', 
-                                                fontSize: `${el.size}px`,
-                                                top: `${el.top}px`,
-                                                left: `${el.left}px`
-                                                }}>
-                                                {el.name}
-                                            </div>
-                                        )
+                                        if (el.type === 'image') {
+                                            return (
+                                                <img key={i} style={{
+                                                    position: 'absolute', 
+                                                    top: `${el.top}px`,
+                                                    left: `${el.left}px`,
+                                                    }}
+                                                    src={el.image}
+                                                    className={el.className}
+                                                    />
+                                              
+                                            )
+                                        }
+                                        if (el.type === 'text') {
+                                            return (
+                                           <div key={i} style={{
+                                               position: 'absolute', 
+                                               fontSize: `${el.size}px`,
+                                               top: `${el.top}px`,
+                                               left: `${el.left}px`,
+                                               fontFamily: `${el.family}`,
+                                               color: el.color
+                                               }}
+                                               className={el.className}
+                                               >
+                                               {el.name}
+                                           </div>
+                                       )}
+                                       
                                     })
                                 }
                             </div>

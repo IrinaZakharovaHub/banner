@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './Constructor.module.css';
+import {animations} from './animations.js';
 
 class Constructor extends React.Component {
     getInnerHtml = () => {
@@ -7,6 +8,9 @@ class Constructor extends React.Component {
         document.execCommand('copy', false, banner.innerHTML);
             var textArea = document.createElement("textarea");
             textArea.value = banner.innerHTML;
+            textArea.value+= `<style>
+            ${animations}
+            </style>`
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();

@@ -2,8 +2,8 @@ import {bannerActionTypes} from './bannerBackground.types'
 
 const initialState = {
     background: {
-        type: 'image',
-        resource: 'url(./resources/img.jpg)'
+        type: 'fill',
+        resource: 'grey'
     },
 };
 
