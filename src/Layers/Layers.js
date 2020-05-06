@@ -70,9 +70,9 @@ class Layers extends React.Component {
         return (
             <>
                 <div>
-                     <button onClick={()=>this.addLayer('image')} className={styles.button}>1. Add all image layers</button>
+                     <button onClick={()=>this.addLayer('image')} className={styles.button}> Add image</button>
                      <br/>
-                     <button onClick={()=>this.addLayer('text')} className={styles.button}>2. Add all text layers</button>
+                     <button onClick={()=>this.addLayer('text')} className={styles.button}>Add text </button>
                 </div>
                 <div className={styles.overflow}>
                     <ImageLayer/>
