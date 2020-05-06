@@ -11,29 +11,22 @@ const layersReducer = (state = initialState, action) => {
         case layerActionTypes.CHANGE:
             const layers = state.layers.map(el=>{
                 if(el.id === action.payload.id) {
-                    if (action.payload.type === 'name') {
+                    if (action.payload.type === 'class') {
+                        // const prevClasses = el.className ? el.className : '';
                         return {
                             ...el,
-                            name:  action.payload.value
+                            className:  action.payload.value
                         }
                     }
-                    if (action.payload.type === 'size') {
+                    if (action.payload.type === 'font-family') {
                         return {
                             ...el,
-                            size:  action.payload.value
+                            family:  action.payload.value
                         }
                     }
-                    if (action.payload.type === 'top') {
-                        return {
-                            ...el,
-                            top:  action.payload.value
-                        }
-                    }
-                    if (action.payload.type === 'left') {
-                        return {
-                            ...el,
-                            left:  action.payload.value
-                        }
+                    return {
+                        ...el,
+                        [action.payload.type]:  action.payload.value
                     }
                 }
                 return el;

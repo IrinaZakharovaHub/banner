@@ -54,6 +54,19 @@ let conf = {
                 ]
             },
             {
+                test: /^((?!\.module).)*css$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                    },
+                    {
+                        loader: 'css-loader',
+                    },
+                    "sass-loader"
+                ]
+            },
+            {
                 test: /\.(png|jp(e*)g|svg|gif)$/,
                 use: [{
                     loader: 'url-loader',
