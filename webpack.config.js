@@ -87,7 +87,8 @@ let conf = {
             '~c': path.resolve(__dirname, './src/components'),
             '~s': path.resolve(__dirname, './src/store'),
             '~img': path.resolve(__dirname, './src/assets/img')
-        }
+        },
+
     },
     devServer: {
         publicPath: '/dist/',
