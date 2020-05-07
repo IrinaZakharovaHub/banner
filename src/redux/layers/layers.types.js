@@ -1,5 +1,6 @@
 export const layerActionTypes = {
     ADD: 'ADD',
     DELETE: 'DELETE',
-    CHANGE: 'CHANGE'
+    CHANGE: 'CHANGE',
+    RESTART: 'RESTART'
 };

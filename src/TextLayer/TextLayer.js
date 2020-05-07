@@ -2,9 +2,29 @@ import React from 'react';
 import '../animation.css';
 import styles from '../Layers/Layers.module.css';
 import { connect } from "react-redux";
-import { deleteLayer, changeLayer } from '../redux/layers/layers.actions';
+import { deleteLayer, changeLayer, restart } from '../redux/layers/layers.actions';
 
-class TextLayer extends React.Component {
+class TextLayer extends React.Component {  
+
+    constructor(props) {
+        super(props);
+        this.state = {}
+    }
+
+    static getDerivedStateFromProps(props) {
+        if (props.layers.restart === true) {
+            props.restart(false);
+            props.layers.layers.forEach(el=>{
+                if (el.className) {
+                    props.changeLayer('class','', el.id);
+                    setTimeout(()=>{
+                        props.changeLayer('class', el.className, el.id);
+                    },10);
+                }
+            })
+            
+        }
+    }
 
     deleteLayer = (id) => {
         this.props.deleteLayer(id);
@@ -20,15 +40,17 @@ class TextLayer extends React.Component {
         setTimeout(()=>{
              this.props.changeLayer('class',className, id);
         },10);
+        this.props.restart(false);
     }
-   
+
     render() {
         const textLayers = this.props.layers.layers.filter(el=> {
             return el.type === 'text'
         })
         return (
             <>
-                {textLayers &&
+                {
+                textLayers &&
                     textLayers.map((el) => {
                             return (
                                 <div key={el.id} className={styles.block} style={{order: el.order}}>
@@ -100,11 +122,12 @@ class TextLayer extends React.Component {
                                          </div>
                                     </div>
                                     <div className={styles.row}> 
-                                    
                                         {
                                               el.animations.map(animation=> {
                                                 return (
-                                                    <button key={animation.className} className={[styles.buttonAnimation, ` ${el.className  === animation.className ? ' active' : null}`].join(' ')}  onClick={()=>this.addClass(animation.className, el.id )}>
+
+                                                    <button key={animation.className} className={[styles.buttonAnimation, ` ${el.className  === animation.className ? ' active' : null}`].join(' ')} 
+                                                        onClick={()=>this.addClass(animation.className, el.id )}>
                                                     {animation.name}
                                                 </button>  
                                                 )
@@ -123,14 +146,16 @@ class TextLayer extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        layers: state.layers
+        layers: state.layers,
+        restart: state.restart
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         deleteLayer: (id) => dispatch(deleteLayer(id)),
-        changeLayer: (type, value, id) => dispatch(changeLayer(type,value, id))
+        changeLayer: (type, value, id) => dispatch(changeLayer(type,value, id)),
+        restart: (bool)=> dispatch(restart(bool))
     }
 };
 

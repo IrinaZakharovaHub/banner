@@ -16,3 +16,11 @@ export const deleteLayer = (id) => {
         payload: id
     }
 };
+
+export const restart = (boolean) => {
+    console.log('REST', boolean);
+    return {
+        type: layerActionTypes.RESTART,
+        payload: boolean
+    }
+};

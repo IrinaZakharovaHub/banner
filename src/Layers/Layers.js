@@ -2,9 +2,10 @@ import React from 'react';
 import '../animation.css';
 import styles from './Layers.module.css';
 import { connect } from "react-redux";
-import { addLayer, deleteLayer, changeLayer } from '../redux/layers/layers.actions';
+import { addLayer, deleteLayer, changeLayer, restart } from '../redux/layers/layers.actions';
 import TextLayer from '../TextLayer/TextLayer';
 import ImageLayer from '../ImageLayer/Imagelayer';
+import {animations} from '../helpers/animations';
 
 class Layers extends React.Component {
 
@@ -28,16 +29,7 @@ class Layers extends React.Component {
                 left: 0,
                 className: '',
                 order: `${this.state.counter}`,
-                animations: [
-                    {
-                        name: 'Fade in',
-                        className:  'fade-in'
-                    },
-                    {
-                        name: 'To top',
-                        className:  'to-top'
-                    }
-                ]
+                animations
             });
         }
         if (type === 'image') {
@@ -49,22 +41,16 @@ class Layers extends React.Component {
                 left: 0,
                 className: '',
                 order: this.state.counter,
-                animations: [
-                    {
-                        name: 'Fade in',
-                        className:  'fade-in'
-                    },
-                    {
-                        name: 'To top',
-                        className:  'to-top'
-                    }
-                ]
+                animations
             });
         }
         this.setState({conter: this.state.counter++})
         console.log('count', this.state.counter);
-
     };
+
+    restart  = () => {
+      this.props.restart(true);
+    }
 
     render() {
         return (
@@ -78,6 +64,9 @@ class Layers extends React.Component {
                     <ImageLayer/>
                     <TextLayer/>
                 </div>
+                <button onClick={this.restart}>
+                    RESTART
+                </button>
             </>
         )
     }
@@ -92,6 +81,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         addLayer: (layer) => dispatch(addLayer(layer)),
+        restart: (bool)=> dispatch(restart(bool))
     }
 };
 

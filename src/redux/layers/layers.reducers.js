@@ -1,7 +1,8 @@
 import {layerActionTypes} from './layers.types';
 
 const initialState = {
-    layers: []
+    layers: [],
+    restart: false
 };
 
 const layersReducer = (state = initialState, action) => {
@@ -34,6 +35,8 @@ const layersReducer = (state = initialState, action) => {
             return {...state, layers};
         case layerActionTypes.DELETE:
             return {...state, layers: state.layers.filter(el=> el.id !== action.payload)};
+        case layerActionTypes.RESTART:
+            return {...state, restart: action.payload}
         default:
             return state
     }
