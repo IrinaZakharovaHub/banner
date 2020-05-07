@@ -94,6 +94,7 @@ class Menu extends React.Component {
                 </div>
                 <Layers/>
                 <Constructor/>
+                <div>----------------</div>
             </div>
         )
     }
